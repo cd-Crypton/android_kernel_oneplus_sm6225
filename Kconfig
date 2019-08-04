@@ -49,3 +49,5 @@ source "lib/Kconfig"
 source "lib/Kconfig.debug"
 
 source "kernel/Kconfig.panicflush"
+
+source "techpack/Kconfig"
