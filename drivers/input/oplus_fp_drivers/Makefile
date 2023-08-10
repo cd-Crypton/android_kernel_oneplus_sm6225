@@ -1,22 +1,46 @@
-obj-$(CONFIG_OPLUS_FINGERPRINT) += oplus_fp_common/
+ccflags-$(CONFIG_OPLUS_FINGERPRINT_GKI_ENABLE) += -DCONFIG_OPLUS_FINGERPRINT_GKI_ENABLE
 
-### Capacitive fingerprint sensor
-obj-$(CONFIG_OPLUS_FINGERPRINT_FPC) += fpc/
-obj-$(CONFIG_OPLUS_FINGERPRINT_CDFPS) += cdfingerfp/
-obj-$(CONFIG_OPLUS_FINGERPRINT_JIIOV_CAPACITIVE) += anc_capacitive_driver/
-obj-$(CONFIG_OPLUS_FINGERPRINT_EGIS) += egis/
+ifeq ($(CONFIG_UFF_FINGERPRINT_QCOM),y)
+ccflags-y += -DQCOM_PLATFORM
 
-obj-$(CONFIG_OPLUS_FINGERPRINT_CHIPONE) +=chipone/
-
-### Optical fingerprint sensor
-ifneq ($(CONFIG_OPLUS_FINGERPRINT_GOODIX)_$(CONFIG_OPLUS_FINGERPRINT_GOODIX_OPTICAL), _)
-obj-y += goodix_optical_fp/
+ifeq ($(CONFIG_OPLUS_FINGERPRINT_GKI_ENABLE),y)
+#tp for gki
+ccflags-y += -I$(srctree)/../../vendor/oplus/kernel/touchpanel/oplus_touchscreen_v2/touchpanel_notify
 endif
-obj-$(CONFIG_OPLUS_FINGERPRINT_SILEAD_OPTICAL) += silead_optical_fp/
-obj-$(CONFIG_OPLUS_FINGERPRINT_EGIS_OPTICAL)   += egis_optical_fp/
-obj-$(CONFIG_OPLUS_FINGERPRINT_SILEAD) += silead/
-obj-$(CONFIG_OPLUS_FINGERPRINT_JIIOV_OPTICAL)  += anc_driver/
-obj-$(CONFIG_OPLUS_FINGERPRINT_GOODIX_OPTICAL)	+= 	goodix_optical_fp/
-obj-$(CONFIG_OPLUS_FINGERPRINT_FOCALTECH) += focaltech_fp/
-### FEATURE MACRO
-ccflags-$(CONFIG_OPLUS_FINGERPRINT_NAVIGATION_ENABLE) += -DFP_NAVIGATION_ENABLE
+
+obj-$(CONFIG_UFF_FINGERPRINT)  += uff_fp_driver.o
+uff_fp_driver-y := fp_driver.o fp_platform.o fingerprint_event.o fp_health.o
+endif
+
+ifeq ($(CONFIG_UFF_FINGERPRINT_MTK),y)
+ccflags-y += -DMTK_PLATFORM
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat
+subdir-ccflags-y += -I$(srctree)/drivers/spi/mediatek/$(MTK_PLATFORM)
+subdir-ccflags-y += -I$(srctree)/drivers/spi/trustzone/spi/Tlspi/inc
+
+ifneq ($(filter kernel-4.19, $(LINUX_KERNEL_VERSION)),)
+include $(srctree)/drivers/tee/gud/Makefile.include
+else ifneq ($(filter kernel-4.14 kernel-4.9, $(LINUX_KERNEL_VERSION)),)
+include $(srctree)/drivers/misc/mediatek/gud/Makefile.include
+endif
+
+#lcd uiready for gki
+ccflags-$(CONFIG_DRM_MEDIATEK_V2) += -I$(srctree)/drivers/gpu/drm/mediatek/mediatek_v2/
+ccflags-$(CONFIG_DRM_MEDIATEK_V2) += -DCONFIG_DRM_MEDIATEK_V2
+
+# wl2868c supply for gki
+ccflags-$(CONFIG_FP_SUPPLY_MODE_LDO) += -I$(srctree)/drivers/misc/mediatek/wl2868c
+ccflags-$(CONFIG_FP_SUPPLY_MODE_LDO) += -DCONFIG_FP_SUPPLY_MODE_LDO
+
+ifeq ($(CONFIG_OPLUS_FINGERPRINT_GKI_ENABLE),y)
+#tp for gki
+ccflags-y += -I$(srctree)/../vendor/oplus/kernel/touchpanel/oplus_touchscreen_v2/touchpanel_notify
+endif
+
+obj-$(CONFIG_UFF_FINGERPRINT) += uff_fp_driver.o
+uff_fp_driver-y := fp_driver.o fp_platform.o fingerprint_event.o fp_health.o
+endif
+
+obj-$(CONFIG_UFF_FINGERPRINT_REE_SPI) += ree_spi/

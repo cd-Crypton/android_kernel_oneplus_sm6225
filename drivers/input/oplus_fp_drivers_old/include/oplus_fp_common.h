@@ -23,8 +23,6 @@
 
 #define LDO_POWER_NODE                  "ldo"
 #define LDO_CONFIG_NODE                 "ldo-config"
-#define LDO_NUM_NODE                    "ldo-num"
-
 #define LDO_PARAM_AMOUNT                3
 
 #define LDO_VMAX_INDEX                  (0)
@@ -59,6 +57,15 @@ typedef enum {
     FP_SILEAD_6157 = 22,
     FP_JIIOV_0302 = 23,
     FP_CHIPONE_C7332 = 24,
+    FP_GOODIX_3688 = 25,
+    FP_GOODIX_3636 = 26,
+    FP_GOODIX_3956 = 27,
+    FP_FPC_1521 = 28,
+    FP_SILEAD_6159 = 29,
+    FP_FPS_980 = 30,
+    FP_JIIOV_0101 = 31,
+    FP_JIIOV_0301 = 32,
+    FP_FT_9396 = 33,
     FP_UNKNOWN,
 } fp_vendor_t;
 
@@ -100,7 +107,6 @@ typedef enum {
     FP_POWER_MODE_LDO,
     FP_POWER_MODE_GPIO,
     FP_POWER_MODE_AUTO,
-    FP_POWER_MODE_WL2868C,
 } fp_power_mode_t;
 
 typedef struct {
@@ -113,5 +119,8 @@ typedef struct {
 } fp_power_info_t;
 
 fp_vendor_t get_fpsensor_type(void);
+
+typedef int (*opticalfp_handler)(struct fp_underscreen_info *tp_info);
+void opticalfp_irq_handler_register(opticalfp_handler handler);
 
 #endif  /*_OPLUS_FP_COMMON_H_*/
