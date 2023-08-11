@@ -2,7 +2,7 @@
 # Stock Kernel Configurations (full)
 #
 
-CONFIG_LOCALVERSION="-perf"
+CONFIG_LOCALVERSION="-KernelSU-perf"
 CONFIG_INIT_ENV_ARG_LIMIT=32
 # CONFIG_COMPILE_TEST is not set
 # CONFIG_LOCALVERSION_AUTO is not set
