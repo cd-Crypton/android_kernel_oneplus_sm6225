@@ -3582,10 +3582,8 @@ static const struct snd_soc_dapm_route rx_audio_map[] = {
 	{"RX INT2 SEC MIX", NULL, "RX INT2_1 INTERP"},
 	{"RX INT2 MIX2", NULL, "RX INT2 SEC MIX"},
 	{"RX INT2 MIX2", NULL, "RX INT2 MIX2 INP"},
-	#ifdef CONFIG_SND_SOC_OPLUS_PA_MANAGER
-	#else
 	{"AUX_OUT", NULL, "RX INT2 MIX2"},
-	#endif
+
 	{"AUX_OUT", NULL, "RX_MCLK"},
 
 	{"IIR0", NULL, "RX_MCLK"},
